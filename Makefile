@@ -1,6 +1,6 @@
 NAME=saml2aws
 ARCH=$(shell uname -m)
-VERSION=2.27.1
+VERSION=2.27.2
 ITERATION := 1
 
 SOURCE_FILES?=$$(go list ./... | grep -v /vendor/)
@@ -8,6 +8,17 @@ TEST_PATTERN?=.
 TEST_OPTIONS?=
 
 BIN_DIR := $(CURDIR)/bin
+
+LINUX_BUILD_OPS := -tags="hidraw" -osarch="linux/i386" -osarch="linux/amd64"
+WINDOWS_BUILD_OPS := -osarch="windows/i386" -osarch="windows/amd64"
+DARWIN_BUILD_OPS := -osarch="darwin/amd64"
+
+# Partially based on https://stackoverflow.com/questions/714100/os-detecting-makefile/52062069#52062069
+ifeq '$(findstring ;,$(PATH))' ';'
+	UNAME := Windows
+else
+	UNAME := $(shell uname 2>/dev/null || echo Unknown)
+endif
 
 ci: prepare test
 
@@ -26,16 +37,27 @@ mod:
 	@go mod download
 	@go mod tidy
 
-compile: mod
-	@rm -rf build/
+define compile
 	@$(BIN_DIR)/gox -ldflags "-X main.Version=$(VERSION)" \
-	-osarch="darwin/amd64" \
-	-osarch="linux/i386" \
-	-osarch="linux/amd64" \
-	-osarch="windows/amd64" \
-	-osarch="windows/i386" \
+	$(1) \
 	-output "build/{{.Dir}}_$(VERSION)_{{.OS}}_{{.Arch}}/$(NAME)" \
 	${SOURCE_FILES}
+endef
+
+linux: mod
+	$(call compile,$(LINUX_BUILD_OPS))
+
+windows: mod
+	$(call compile,$(WINDOWS_BUILD_OPS))
+
+darwin: mod
+	@if [ "$(UNAME)" = "Darwin" ]; then \
+		$(call compile,$(DARWIN_BUILD_OPS)); \
+	else \
+		echo "\nWARNING: Trying to compile Darwin on a non-Darwin OS\nOS Detected: $(UNAME)"; \
+	fi
+
+compile: clean linux windows darwin
 
 # Run all the linters
 lint:
@@ -45,8 +67,8 @@ lint:
 fmt:
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
 
-install:
-	go install ./cmd/saml2aws
+install: mod
+	go install -ldflags "-X main.Version=$(VERSION)" ./cmd/saml2aws
 
 dist:
 	$(eval FILES := $(shell ls build))

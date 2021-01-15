@@ -8,7 +8,7 @@ require (
 	github.com/Azure/go-ntlmssp v0.0.0-20180416175057-4b934ac9dad3
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc // indirect
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20190910110746-680d30ca3117 // indirect
 	github.com/aulanov/go.dbus v0.0.0-20150729231527-25c3068a42a0 // indirect
 	github.com/avast/retry-go v2.6.0+incompatible
@@ -19,11 +19,10 @@ require (
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
 	github.com/google/uuid v1.1.1
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
-	github.com/karalabe/hid v1.0.0 // indirect
 	github.com/keybase/go-keychain v0.0.0-20181011010623-f1daa725cce4 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
-	github.com/marshallbrekka/go-u2fhost v0.0.0-20200107013215-ad5fdc1986ac
-	github.com/mitchellh/go-homedir v1.0.0
+	github.com/kr/pretty v0.2.1 // indirect
+	github.com/marshallbrekka/go-u2fhost v0.0.0-20210111072507-3ccdec8c8105
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
